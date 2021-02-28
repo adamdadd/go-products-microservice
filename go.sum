@@ -1,2 +1,4 @@
 github.com/adamdadd/go-products-microservice/handlers v0.0.0-20210228192218-ff7b5f1605a6 h1:t3SvTEnVX9JMf8/L3SZkIGg++z2M0uMbU5dZLx2s0FE=
 github.com/adamdadd/go-products-microservice/handlers v0.0.0-20210228192218-ff7b5f1605a6/go.mod h1:8XJuGpuK1bfjp6OMowqcS6t6Ecet9UZ30+NsrEqauSM=
+github.com/adamdadd/go-products-microservice/handlers v0.0.0-20210228194715-060dc168d0c4 h1:qccS0k8oEGpkpoLIy6Bso1DXYeGzYbWV4o6OjYx01rg=
+github.com/adamdadd/go-products-microservice/handlers v0.0.0-20210228194715-060dc168d0c4/go.mod h1:8XJuGpuK1bfjp6OMowqcS6t6Ecet9UZ30+NsrEqauSM=
