@@ -3,11 +3,11 @@
 
 [[projects]]
   branch = "main"
-  digest = "1:051bbd2679b6c7b3a86a22965e0715d14d0e7aaffbf0e873b3442affdc21c031"
+  digest = "1:b74280c358cb6380f4c33ab138b89cc3116ce66a81c4e3a69cbe9b1d01e8decc"
   name = "github.com/adamdadd/go-products-microservice"
   packages = ["handlers"]
   pruneopts = "UT"
-  revision = "1177285763a66e543afb2495a021eaa15fd856a4"
+  revision = "8d8aece1f6014f142c56772ca653d995934c5e1b"
 
 [solve-meta]
   analyzer-name = "dep"
