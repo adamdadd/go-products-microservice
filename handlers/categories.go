@@ -7,7 +7,7 @@ import (
 )
 
 type Categories struct {
-	logger log.Logger
+	logger *log.Logger
 }
 
 func NewCategories(logger *log.Logger) *Categories {
