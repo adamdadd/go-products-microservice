@@ -3,15 +3,21 @@
 
 [[projects]]
   branch = "main"
-  digest = "1:b74280c358cb6380f4c33ab138b89cc3116ce66a81c4e3a69cbe9b1d01e8decc"
+  digest = "1:2e5863e97572c255c427657ae86d2fbf76d9cfcd09d4938ce12893798e406372"
   name = "github.com/adamdadd/go-products-microservice"
-  packages = ["handlers"]
+  packages = [
+    "handlers",
+    "models",
+  ]
   pruneopts = "UT"
-  revision = "8d8aece1f6014f142c56772ca653d995934c5e1b"
+  revision = "dd83c5d10c23e5085cb4df77379611abd08b7820"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  input-imports = ["github.com/adamdadd/go-products-microservice/handlers"]
+  input-imports = [
+    "github.com/adamdadd/go-products-microservice/handlers",
+    "github.com/adamdadd/go-products-microservice/models",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

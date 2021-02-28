@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"fmt"
-	"io/ioutil"
+	"encoding/json"
+	"github.com/adamdadd/go-products-microservice/models"
 	"log"
 	"net/http"
 )
@@ -16,13 +16,11 @@ func NewProducts(logger *log.Logger) *Products {
 }
 
 func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	p.logger.Println("hello world")
 
-	d, err := ioutil.ReadAll(r.Body)
+	lp := models.GetProducts()
+	data, err := json.Marshal(lp)
 	if err != nil {
-		http.Error(rw, "something went wrong", http.StatusBadRequest)
-		return
+		http.Error(rw, "failed to process data", http.StatusInternalServerError)
 	}
 
-	fmt.Fprintf(rw, "%s\n", d)
 }
