@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 )
@@ -15,5 +14,5 @@ func NewCategories(logger *log.Logger) *Categories {
 }
 
 func (c *Categories) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(rw, "categories %s\n", r)
+	rw.Write([]byte("categories"))
 }
