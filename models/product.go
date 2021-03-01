@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 )
 
@@ -14,6 +15,36 @@ type Product struct {
 	ImageURL string `json:"image_url"`
 }
 
+var ErrorProductNotFound = fmt.Errorf("Product Not Found")
+
+func AddProduct(p *Product) {
+	p.ID = nextID()
+	productList = append(productList, p)
+}
+
+func nextID() int {
+	lp := productList[len(productList) - 1]
+	return lp.ID + 1
+}
+
+func UpdateProduct(id int, p *Product) error {
+	_, i, err := findProduct(id)
+	if err != nil {
+		return err
+	}
+	productList[i] = p
+	return nil
+}
+
+func findProduct(id int) (*Product, int, error){
+	for i, p := range productList {
+		if p.ID == id {
+			return p, i, nil
+		}
+	}
+	return nil, 0, ErrorProductNotFound
+}
+
 func (p *Product) FromJSON(r io.Reader) error {
 	decoder := json.NewDecoder(r)
 	return decoder.Decode(p)
@@ -24,7 +55,6 @@ func (p *Product) ToJSON(w io.Writer) error {
 	return encoder.Encode(p)
 }
 
-
 type Products []*Product
 
 func (p *Products) ToJSON(w io.Writer) error {
@@ -34,10 +64,6 @@ func (p *Products) ToJSON(w io.Writer) error {
 
 func GetProducts() Products {
 	return productList
-}
-
-func AddProduct(p *Product) Products {
-	return append(productList, p)
 }
 
 var productList = []*Product{

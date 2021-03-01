@@ -4,6 +4,8 @@ import (
 	"github.com/adamdadd/go-products-microservice/models"
 	"log"
 	"net/http"
+	"regexp"
+	"strconv"
 )
 
 type Products struct {
@@ -26,7 +28,20 @@ func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodPut {
-		p.changeProduct(rw, r)
+		re := regexp.MustCompile("/([0-9]+)")
+		g := re.FindAllStringSubmatch(r.URL.Path, -1)
+		idStr := g[0][1]
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			p.logger.Println("Unable tot convert id to int", idStr)
+			http.Error(rw, "Invalid URI", http.StatusBadRequest)
+			return
+		}
+		p.updateProduct(id, rw, r)
+		p.logger.Println("Updated product", id)
+	}
+
+	if r.Method == http.MethodDelete {
 		return
 	}
 
@@ -48,8 +63,29 @@ func (p *Products) addProduct(rw http.ResponseWriter, r *http.Request) {
 		http.Error(rw, "failed to add product", http.StatusBadRequest)
 	}
 
-	p.logger.Printf("Product %#v", product)
+	models.AddProduct(product)
+	p.logger.Printf("Product added: %#v", product)
 }
 
-func (p *Products) changeProduct(rw http.ResponseWriter, r *http.Request) {
+func (p *Products) updateProduct(id int, rw http.ResponseWriter, r *http.Request) {
+	product := &models.Product{}
+
+	err := product.FromJSON(r.Body)
+	if err != nil {
+		http.Error(rw, "failed to add product", http.StatusBadRequest)
+	}
+
+	err = models.UpdateProduct(id, product)
+	if err == models.ErrorProductNotFound {
+		http.Error(rw, "Product not found", http.StatusNotFound)
+		return
+	}
+	if err != nil {
+		http.Error(rw, "Product not found", http.StatusNotFound)
+		return
+	}
+}
+
+func (p *Products) deleteProduct(id int, rw http.ResponseWriter, r *http.Request) {
+	
 }
