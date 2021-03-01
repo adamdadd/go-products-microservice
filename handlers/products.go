@@ -23,4 +23,6 @@ func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		http.Error(rw, "failed to process data", http.StatusInternalServerError)
 	}
 
+	rw.Write(data)
+
 }
