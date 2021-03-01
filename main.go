@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/adamdadd/go-products-microservice/handlers"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
@@ -13,11 +14,22 @@ import (
 func main() {
 	logger := log.New(os.Stdout, "Product API", log.LstdFlags)
 	ph := handlers.NewProducts(logger)
-	ch := handlers.NewCategories(logger)
 
-	sm := http.NewServeMux()
-	sm.Handle("/products/", ph)
-	sm.Handle("/categories/", ch)
+	sm := mux.NewRouter()
+
+	gr := sm.Methods("GET").Subrouter()
+	gr.HandleFunc("/products/", ph.GetProducts)
+
+	pr := sm.Methods("POST").Subrouter()
+	pr.HandleFunc("/products/", ph.AddProduct)
+	pr.Use(ph.ProductsMiddleware)
+
+	putr := sm.Methods("PUT").Subrouter()
+	putr.HandleFunc("/products/{id:[0-9]+}", ph.UpdateProduct)
+	putr.Use(ph.ProductsMiddleware)
+
+	dr := sm.Methods("DELETE").Subrouter()
+	dr.HandleFunc("/products/{id:[0-9]+}", ph.DeleteProduct)
 
 	s := &http.Server{
 		Addr: ":8080",

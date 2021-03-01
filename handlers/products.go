@@ -1,10 +1,11 @@
 package handlers
 
 import (
+	"context"
 	"github.com/adamdadd/go-products-microservice/models"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"regexp"
 	"strconv"
 )
 
@@ -16,39 +17,7 @@ func NewProducts(logger *log.Logger) *Products {
 	return &Products{logger: logger}
 }
 
-func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		p.getProducts(rw, r)
-		return
-	}
-
-	if r.Method == http.MethodPost {
-		p.addProduct(rw, r)
-		return
-	}
-
-	if r.Method == http.MethodPut {
-		re := regexp.MustCompile("/([0-9]+)")
-		g := re.FindAllStringSubmatch(r.URL.Path, -1)
-		idStr := g[0][1]
-		id, err := strconv.Atoi(idStr)
-		if err != nil {
-			p.logger.Println("Unable tot convert id to int", idStr)
-			http.Error(rw, "Invalid URI", http.StatusBadRequest)
-			return
-		}
-		p.updateProduct(id, rw, r)
-		p.logger.Println("Updated product", id)
-	}
-
-	if r.Method == http.MethodDelete {
-		return
-	}
-
-	rw.WriteHeader(http.StatusMethodNotAllowed)
-}
-
-func (p *Products) getProducts(rw http.ResponseWriter, r *http.Request) {
+func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
 	lp := models.GetProducts()
 	err := lp.ToJSON(rw)
 	if err != nil {
@@ -56,36 +25,62 @@ func (p *Products) getProducts(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (p *Products) addProduct(rw http.ResponseWriter, r *http.Request) {
-	product := &models.Product{}
-	err := product.FromJSON(r.Body)
-	if err != nil {
-		http.Error(rw, "failed to add product", http.StatusBadRequest)
-	}
+func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
+	product := r.Context().Value(KeyProduct{}).(models.Product)
 
-	models.AddProduct(product)
+	models.AddProduct(&product)
 	p.logger.Printf("Product added: %#v", product)
 }
 
-func (p *Products) updateProduct(id int, rw http.ResponseWriter, r *http.Request) {
-	product := &models.Product{}
-
-	err := product.FromJSON(r.Body)
-	if err != nil {
-		http.Error(rw, "failed to add product", http.StatusBadRequest)
+func (p *Products) UpdateProduct(rw http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, cerr := strconv.Atoi(vars["id"])
+	if cerr != nil {
+		p.logger.Println("Failed to convert id to int: ", vars["id"])
+		http.Error(rw, "Invalid URI", http.StatusBadRequest)
 	}
 
-	err = models.UpdateProduct(id, product)
-	if err == models.ErrorProductNotFound {
+	product := r.Context().Value(KeyProduct{}).(models.Product)
+
+	err := models.UpdateProduct(id, &product)
+	if err == models.ErrorProductNotFound || err != nil {
 		http.Error(rw, "Product not found", http.StatusNotFound)
 		return
 	}
-	if err != nil {
-		http.Error(rw, "Product not found", http.StatusNotFound)
-		return
-	}
+	p.logger.Printf("Product updated: ", id)
 }
 
-func (p *Products) deleteProduct(id int, rw http.ResponseWriter, r *http.Request) {
-	
+func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, cerr := strconv.Atoi(vars["id"])
+	if cerr != nil {
+		p.logger.Println("Failed to convert id to int: ", vars["id"])
+		http.Error(rw, "invalid URI", http.StatusBadRequest)
+		return
+	}
+
+	err := models.DeleteProduct(id)
+	if err != nil {
+		p.logger.Println("Invalid URI for product: ", id)
+		http.Error(rw, "Invalid URI", http.StatusBadRequest)
+		return
+	}
+	p.logger.Printf("Product deleted: ", id)
+}
+
+type KeyProduct struct {}
+
+func (p Products) ProductsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func (rw http.ResponseWriter, r *http.Request) {
+			product := models.Product{}
+			err := product.FromJSON(r.Body)
+			if err != nil {
+				http.Error(rw, "Error trying to parse request body", http.StatusBadRequest)
+				p.logger.Println("Failed parsing JSON request: ", r.Body)
+			}
+			ctx := context.WithValue(r.Context(), KeyProduct{}, product)
+			req := r.WithContext(ctx)
+			next.ServeHTTP(rw, req)
+			return
+	})
 }

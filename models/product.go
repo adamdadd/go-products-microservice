@@ -36,13 +36,22 @@ func UpdateProduct(id int, p *Product) error {
 	return nil
 }
 
+func DeleteProduct(id int) error {
+	_, i, err := findProduct(id)
+	if err != nil {
+		return err
+	}
+	productList = append(productList[:i], productList[i+1:]...)
+	return nil
+}
+
 func findProduct(id int) (*Product, int, error){
 	for i, p := range productList {
 		if p.ID == id {
 			return p, i, nil
 		}
 	}
-	return nil, 0, ErrorProductNotFound
+	return nil, -1, ErrorProductNotFound
 }
 
 func (p *Product) FromJSON(r io.Reader) error {
