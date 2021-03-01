@@ -1,5 +1,10 @@
 package models
 
+import (
+	"encoding/json"
+	"io"
+)
+
 type Product struct {
 	ID int `json:"id"`
 	Name string `json:"name"`
@@ -9,14 +14,36 @@ type Product struct {
 	ImageURL string `json:"image_url"`
 }
 
-func GetProducts() []*Product {
+func (p *Product) FromJSON(r io.Reader) error {
+	decoder := json.NewDecoder(r)
+	return decoder.Decode(p)
+}
+
+func (p *Product) ToJSON(w io.Writer) error {
+	encoder := json.NewEncoder(w)
+	return encoder.Encode(p)
+}
+
+
+type Products []*Product
+
+func (p *Products) ToJSON(w io.Writer) error {
+	encoder := json.NewEncoder(w)
+	return encoder.Encode(p)
+}
+
+func GetProducts() Products {
 	return productList
+}
+
+func AddProduct(p *Product) Products {
+	return append(productList, p)
 }
 
 var productList = []*Product{
 	&Product{
 		ID:				1,
-		Name:			"Cuppacino",
+		Name:			"Cappuccino",
 		Description: 	"A cup of the good stuff",
 		PriceGBP: 		2.50,
 		SKU:			"qwerty12",
