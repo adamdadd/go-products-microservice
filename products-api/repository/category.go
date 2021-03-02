@@ -23,8 +23,13 @@ func (c *Category) ToJSON(w io.Writer) error {
 }
 
 func AddCategory(c *Category) {
-	c.ID = categoryList[len(categoryList)].ID + 1
+	c.ID = nextCategoryID()
 	categoryList = append(categoryList, c)
+}
+
+func nextCategoryID() int {
+	lc := categoryList[len(categoryList) - 1]
+	return lc.ID + 1
 }
 
 type Categories []*Category

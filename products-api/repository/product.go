@@ -18,11 +18,11 @@ type Product struct {
 var ErrorProductNotFound = fmt.Errorf("Product Not Found")
 
 func AddProduct(p *Product) {
-	p.ID = nextID()
+	p.ID = nextProductID()
 	productList = append(productList, p)
 }
 
-func nextID() int {
+func nextProductID() int {
 	lp := productList[len(productList) - 1]
 	return lp.ID + 1
 }

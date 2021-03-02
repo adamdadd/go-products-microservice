@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	_ "github.com/adamdadd/go-products-microservice/docs"
 	"github.com/adamdadd/go-products-microservice/handlers"
 	"github.com/gorilla/mux"
 	"log"
@@ -19,20 +18,17 @@ func main() {
 
 	sm := mux.NewRouter()
 
-	gr := sm.Methods("GET").Subrouter()
-	gr.HandleFunc("/products/", ph.GetProducts)
-	gr.HandleFunc("/categories/", ch.GetCategories)
+	pr := sm.PathPrefix("/products").Subrouter()
+	pr.HandleFunc("/", ph.GetProducts).Methods(http.MethodGet)
+	pr.HandleFunc("/", ph.AddProduct).Methods(http.MethodPost)
+	pr.HandleFunc("/{id:[0-9]+}", ph.UpdateProduct).Methods(http.MethodPut)
+	pr.HandleFunc("/{id:[0-9]+}", ph.DeleteProduct).Methods(http.MethodDelete)
+	pr.Use(ph.ProductsMiddleware)
 
-	ppr := sm.Methods("POST").Subrouter()
-	ppr.HandleFunc("/products/", ph.AddProduct)
-	ppr.Use(ph.ProductsMiddleware)
-
-	putr := sm.Methods("PUT").Subrouter()
-	putr.HandleFunc("/products/{id:[0-9]+}", ph.UpdateProduct)
-	putr.Use(ph.ProductsMiddleware)
-
-	dr := sm.Methods("DELETE").Subrouter()
-	dr.HandleFunc("/products/{id:[0-9]+}", ph.DeleteProduct)
+	cr := sm.PathPrefix("/categories").Subrouter()
+	cr.HandleFunc("/", ch.GetCategories).Methods(http.MethodGet)
+	cr.HandleFunc("/", ch.AddCategory).Methods(http.MethodPost)
+	cr.Use(ch.CategoriesMiddleware)
 
 	s := &http.Server{
 		Addr: ":8080",
@@ -55,7 +51,7 @@ func main() {
 
 	sig := <-channel
 
-	logger.Println("shutting down", sig)
+	logger.Println("Server Shutting Down: Signal:", sig)
 
 	tc, _ := context.WithTimeout(context.Background(), 30*time.Second)
 	s.Shutdown(tc)
