@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	_ "github.com/adamdadd/go-products-microservice/docs"
 	"github.com/adamdadd/go-products-microservice/handlers"
 	"github.com/gorilla/mux"
 	"log"
@@ -14,15 +15,17 @@ import (
 func main() {
 	logger := log.New(os.Stdout, "Product API", log.LstdFlags)
 	ph := handlers.NewProducts(logger)
+	ch := handlers.NewCategories(logger)
 
 	sm := mux.NewRouter()
 
 	gr := sm.Methods("GET").Subrouter()
 	gr.HandleFunc("/products/", ph.GetProducts)
+	gr.HandleFunc("/categories/", ch.GetCategories)
 
-	pr := sm.Methods("POST").Subrouter()
-	pr.HandleFunc("/products/", ph.AddProduct)
-	pr.Use(ph.ProductsMiddleware)
+	ppr := sm.Methods("POST").Subrouter()
+	ppr.HandleFunc("/products/", ph.AddProduct)
+	ppr.Use(ph.ProductsMiddleware)
 
 	putr := sm.Methods("PUT").Subrouter()
 	putr.HandleFunc("/products/{id:[0-9]+}", ph.UpdateProduct)
