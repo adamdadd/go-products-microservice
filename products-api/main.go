@@ -28,6 +28,8 @@ func main() {
 	cr := sm.PathPrefix("/categories").Subrouter()
 	cr.HandleFunc("/", ch.GetCategories).Methods(http.MethodGet)
 	cr.HandleFunc("/", ch.AddCategory).Methods(http.MethodPost)
+	cr.HandleFunc("/{id:[0-9]+}", ch.UpdateCategory).Methods(http.MethodPut)
+	cr.HandleFunc("/{id:[0-9]+}", ch.DeleteCategory).Methods(http.MethodDelete)
 	cr.Use(ch.CategoriesMiddleware)
 
 	s := &http.Server{

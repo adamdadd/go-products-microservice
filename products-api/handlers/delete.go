@@ -24,3 +24,20 @@ func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
 	p.logger.Printf("Product deleted: ", id)
 }
 
+func (c *Categories) DeleteCategory(rw http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, cerr := strconv.Atoi(vars["id"])
+	if cerr != nil {
+		c.logger.Println("Failed to convert id to int: ", vars["id"])
+		http.Error(rw, "invalid URI", http.StatusBadRequest)
+		return
+	}
+	err := repository.DeleteCategory(id)
+	if err != nil {
+		c.logger.Println("Invalid URI for product: ", id)
+		http.Error(rw, "Invalid URI", http.StatusBadRequest)
+		return
+	}
+	c.logger.Printf("Product deleted: ", id)
+}
+

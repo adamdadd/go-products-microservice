@@ -2,6 +2,7 @@ package repository
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 )
 
@@ -11,6 +12,8 @@ type Category struct {
 	Description string `json:"description"`
 	ImageURL string `json:"image_url"`
 }
+
+var ErrorCategoryNotFound = fmt.Errorf("Category Not Found")
 
 func (c *Category) FromJSON(r io.Reader) error {
 	decoder := json.NewDecoder(r)
@@ -30,6 +33,33 @@ func AddCategory(c *Category) {
 func nextCategoryID() int {
 	lc := categoryList[len(categoryList) - 1]
 	return lc.ID + 1
+}
+
+func UpdateCategory(id int, c *Category) error {
+	_, i, err := findCategory(id)
+	if err != nil {
+		return err
+	}
+	categoryList[i] = c
+	return nil
+}
+
+func DeleteCategory(id int) error {
+	_, i, err := findCategory(id)
+	if err != nil {
+		return err
+	}
+	categoryList = append(categoryList[:i], categoryList[i+1:]...)
+	return nil
+}
+
+func findCategory(id int) (*Category, int, error){
+	for i, c := range categoryList {
+		if c.ID == id {
+			return c, i, nil
+		}
+	}
+	return nil, -1, ErrorCategoryNotFound
 }
 
 type Categories []*Category
