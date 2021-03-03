@@ -2,7 +2,6 @@ package repository
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 )
 
@@ -13,6 +12,16 @@ type Product struct {
 	PriceGBP float32 `json:"price"`
 	SKU string `json:"sku"`
 	ImageURL string `json:"image_url"`
+}
+
+func (p *Product) FromJSON(r io.Reader) error {
+	decoder := json.NewDecoder(r)
+	return decoder.Decode(p)
+}
+
+func (p *Product) ToJSON(w io.Writer) error {
+	encoder := json.NewEncoder(w)
+	return encoder.Encode(p)
 }
 
 func AddProduct(p *Product) {
@@ -29,7 +38,7 @@ func UpdateProduct(id int, p *Product) error {
 	return nil
 }
 
-func DeleteProduct(id int) error {
+func DeleteProduct(id int) RepoError {
 	_, i, err := findProduct(id)
 	if err != nil {
 		return err
@@ -38,19 +47,8 @@ func DeleteProduct(id int) error {
 	return nil
 }
 
-func (p *Product) FromJSON(r io.Reader) error {
-	decoder := json.NewDecoder(r)
-	return decoder.Decode(p)
-}
-
-func (p *Product) ToJSON(w io.Writer) error {
-	encoder := json.NewEncoder(w)
-	return encoder.Encode(p)
-}
-
 type Products []*Product
 
-var ErrorProductNotFound = fmt.Errorf("Product Not Found!")
 
 func (p *Products) ToJSON(w io.Writer) error {
 	encoder := json.NewEncoder(w)

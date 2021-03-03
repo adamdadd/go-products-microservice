@@ -2,7 +2,6 @@ package repository
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 )
 
@@ -13,7 +12,6 @@ type Category struct {
 	ImageURL string `json:"image_url"`
 }
 
-var ErrorCategoryNotFound = fmt.Errorf("Category Not Found")
 
 func (c *Category) FromJSON(r io.Reader) error {
 	decoder := json.NewDecoder(r)

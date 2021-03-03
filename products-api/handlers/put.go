@@ -16,7 +16,7 @@ func (p *Products) Update(rw http.ResponseWriter, r *http.Request) {
 	}
 	product := r.Context().Value(KeyProduct{}).(repository.Product)
 	err := repository.UpdateProduct(id, &product)
-	if err == repository.ErrorProductNotFound || err != nil {
+	if err != nil {
 		http.Error(rw, "Product not found", http.StatusNotFound)
 		return
 	}
@@ -32,7 +32,7 @@ func (c *Categories) Update(rw http.ResponseWriter, r *http.Request) {
 	}
 	cat := r.Context().Value(KeyCategories{}).(repository.Category)
 	err := repository.UpdateCategory(id, &cat)
-	if err == repository.ErrorProductNotFound || err != nil {
+	if err != nil {
 		http.Error(rw, "Product not found", http.StatusNotFound)
 		return
 	}

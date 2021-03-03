@@ -8,30 +8,30 @@ type Model interface {
 }
 
 func nextProductID() int {
-	lp := productList[len(productList) - 1]
-	return lp.ID + 1
+	lastElement := productList[len(productList) - 1]
+	return lastElement.ID + 1
 }
 
 func nextCategoryID() int {
-	lc := categoryList[len(categoryList) - 1]
-	return lc.ID + 1
+	lastElement := categoryList[len(categoryList) - 1]
+	return lastElement.ID + 1
 }
 
-func findProduct(id int) (*Product, int, error){
-	for i, p := range productList {
-		if p.ID == id {
-			return p, i, nil
+func findProduct(id int) (*Product, int, RepoError){
+	for i, prod := range productList {
+		if prod.ID == id {
+			return prod, i, nil
 		}
 	}
-	return nil, -1, ErrorProductNotFound
+	return nil, -1, ProductNotFoundError{"Product Not Found"}
 }
 
-func findCategory(id int) (*Category, int, error){
+func findCategory(id int) (*Category, int, RepoError){
 	for i, c := range categoryList {
 		if c.ID == id {
 			return c, i, nil
 		}
 	}
-	return nil, -1, ErrorCategoryNotFound
+	return nil, -1, CategoryNotFoundError{"Category Not Found"}
 }
 
