@@ -10,6 +10,7 @@ type RepoError interface {
 type ProductNotFoundError struct {
 	msg string
 }
+
 func (p ProductNotFoundError) Error() string {
 	return p.msg
 }
@@ -22,4 +23,7 @@ func (c CategoryNotFoundError) Error() string {
 	return c.msg
 }
 
-var ErrorCategoryNotFound = fmt.Errorf("Category Not Found")
+var (
+	ErrorCategoryNotFound = fmt.Errorf("Category Not Found")
+	ErrorProductNotFound = fmt.Errorf("Product Not Found")
+)

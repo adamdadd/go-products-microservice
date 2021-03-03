@@ -1,6 +1,48 @@
 basePath: /
 consumes:
 - application/json
+definitions:
+  Category:
+    properties:
+      description:
+        type: string
+        x-go-name: Description
+      id:
+        format: int64
+        type: integer
+        x-go-name: ID
+      image_url:
+        type: string
+        x-go-name: ImageURL
+      name:
+        type: string
+        x-go-name: Name
+    type: object
+    x-go-package: github.com/adamdadd/go-products-microservice/repository
+  Product:
+    properties:
+      description:
+        type: string
+        x-go-name: Description
+      id:
+        format: int64
+        type: integer
+        x-go-name: ID
+      image_url:
+        type: string
+        x-go-name: ImageURL
+      name:
+        type: string
+        x-go-name: Name
+      price:
+        format: float
+        type: number
+        x-go-name: PriceGBP
+      sku:
+        type: string
+        x-go-name: SKU
+    type: object
+    x-go-package: github.com/adamdadd/go-products-microservice/repository
 info:
   description: Documentation for Product API.
   title: Products API.
@@ -20,18 +62,24 @@ paths:
       operationId: Category
       responses:
         "201":
-          $ref: '#/responses/http.StatusCreated'
+          $ref: '#/responses/201'
       tags:
       - categories
   /categories/{id}:
     delete:
       description: Deletes a product
       operationId: Category
+      responses:
+        "200":
+          $ref: '#/responses/200'
       tags:
       - categories
     put:
       description: Updates an existing product
       operationId: Category
+      responses:
+        "201":
+          $ref: '#/responses/201'
       tags:
       - categories
   /products/:
@@ -48,22 +96,41 @@ paths:
       operationId: Product
       responses:
         "201":
-          $ref: '#/responses/http.StatusCreated'
+          $ref: '#/responses/201'
       tags:
       - products
   /products/{id}:
     delete:
       description: Deletes a product
       operationId: Product
+      responses:
+        "200":
+          $ref: '#/responses/200'
       tags:
       - products
     put:
       description: Updates an existing product
       operationId: Product
+      responses:
+        "201":
+          $ref: '#/responses/201'
       tags:
       - products
 produces:
 - application/json
+responses:
+  categoryResponse:
+    description: ""
+    schema:
+      items:
+        $ref: '#/definitions/Category'
+      type: array
+  productResponse:
+    description: ""
+    schema:
+      items:
+        $ref: '#/definitions/Product'
+      type: array
 schemes:
 - http
 swagger: "2.0"

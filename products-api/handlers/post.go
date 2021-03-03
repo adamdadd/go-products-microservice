@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github.com/adamdadd/go-products-microservice/repository"
+	"go-products-microservice/products-api/repository"
 	"net/http"
 )
 

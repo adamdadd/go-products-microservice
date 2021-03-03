@@ -31,11 +31,15 @@ import (
 
 // swagger:route PUT /products/{id} products Product
 // Updates an existing product
+// Responses:
+//	201: 201
 
 // swagger:route DELETE /products/{id} products Product
 // Deletes a product
+// Responses:
+//	200: 200
 
-// swagger:response
+// swagger:response productResponse
 type productResponse struct {
 	// in: body
 	Body []repository.Product
@@ -44,7 +48,7 @@ type productResponse struct {
 // swagger:route GET /categories/ categories listCategories
 // Returns a list of products
 // Responses:
-//	200: 201
+//	200: categoryResponse
 
 // swagger:route POST /categories/ categories Category
 // Adds a new product
@@ -53,11 +57,15 @@ type productResponse struct {
 
 // swagger:route PUT /categories/{id} categories Category
 // Updates an existing product
+// Responses:
+//	201: 201
 
 // swagger:route DELETE /categories/{id} categories Category
 // Deletes a product
+// Responses:
+//	200: 200
 
-// swagger:response
+// swagger:response categoryResponse
 type categoryResponse struct {
 	// in: body
 	Body []repository.Category

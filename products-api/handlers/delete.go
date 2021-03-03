@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"github.com/adamdadd/go-products-microservice/repository"
 	"github.com/gorilla/mux"
+	"go-products-microservice/products-api/repository"
 	"net/http"
 	"strconv"
 )
@@ -22,6 +22,7 @@ func (p *Products) Delete(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	p.logger.Printf("Product deleted: ", id)
+	rw.WriteHeader(http.StatusOK)
 }
 
 func (c *Categories) Delete(rw http.ResponseWriter, r *http.Request) {
@@ -39,5 +40,6 @@ func (c *Categories) Delete(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	c.logger.Printf("Product deleted: ", id)
+	rw.WriteHeader(http.StatusOK)
 }
 

@@ -1,9 +1,10 @@
-FROM golang:1.16
-
+FROM golang:alpine as builder
 WORKDIR /app
-
 ADD . /app
-
 RUN go build
 
-CMD ["./go-products-microservice"]
+FROM alpine
+WORKDIR /app
+COPY --from=builder /app .
+CMD ["./products-api"]
+EXPOSE 8080
