@@ -30,11 +30,6 @@ func AddCategory(c *Category) {
 	categoryList = append(categoryList, c)
 }
 
-func nextCategoryID() int {
-	lc := categoryList[len(categoryList) - 1]
-	return lc.ID + 1
-}
-
 func UpdateCategory(id int, c *Category) error {
 	_, i, err := findCategory(id)
 	if err != nil {
@@ -53,15 +48,6 @@ func DeleteCategory(id int) error {
 	return nil
 }
 
-func findCategory(id int) (*Category, int, error){
-	for i, c := range categoryList {
-		if c.ID == id {
-			return c, i, nil
-		}
-	}
-	return nil, -1, ErrorCategoryNotFound
-}
-
 type Categories []*Category
 
 func (c *Categories) ToJSON(w io.Writer) error {
@@ -74,13 +60,13 @@ func GetCategories() Categories {
 }
 
 var categoryList = []*Category{
-	&Category{
+	{
 		ID: 			1,
 		Name: 			"Tall Coffee",
 		Description: 	"Double espresso coffee",
 		ImageURL: 		"random.com",
 	},
-	&Category{
+	{
 		ID: 			2,
 		Name: 			"Short Coffee",
 		Description: 	"Espresso coffee",

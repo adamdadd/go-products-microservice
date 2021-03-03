@@ -6,7 +6,7 @@ import (
 )
 
 
-func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
+func (p *Products) Get(rw http.ResponseWriter, r *http.Request) {
 	lp := repository.GetProducts()
 	err := lp.ToJSON(rw)
 	if err != nil {
@@ -14,7 +14,7 @@ func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (c *Categories) GetCategories(writer http.ResponseWriter, request *http.Request) {
+func (c *Categories) Get(writer http.ResponseWriter, request *http.Request) {
 	lc := repository.GetCategories()
 	err := lc.ToJSON(writer)
 	if err != nil {

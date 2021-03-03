@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
+func (p *Products) Delete(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, cerr := strconv.Atoi(vars["id"])
 	if cerr != nil {
@@ -24,7 +24,7 @@ func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
 	p.logger.Printf("Product deleted: ", id)
 }
 
-func (c *Categories) DeleteCategory(rw http.ResponseWriter, r *http.Request) {
+func (c *Categories) Delete(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, cerr := strconv.Atoi(vars["id"])
 	if cerr != nil {

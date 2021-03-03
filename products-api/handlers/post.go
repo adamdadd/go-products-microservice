@@ -5,14 +5,14 @@ import (
 	"net/http"
 )
 
-func (p *Products) AddProduct(writer http.ResponseWriter, request *http.Request) {
+func (p *Products) Add(writer http.ResponseWriter, request *http.Request) {
 	product := request.Context().Value(KeyProduct{}).(repository.Product)
 	repository.AddProduct(&product)
 	writer.WriteHeader(http.StatusCreated)
 	p.logger.Printf("Product added: %#v", product)
 }
 
-func (c *Categories) AddCategory(writer http.ResponseWriter, request *http.Request) {
+func (c *Categories) Add(writer http.ResponseWriter, request *http.Request) {
 	cat := request.Context().Value(KeyCategories{}).(repository.Category)
 	repository.AddCategory(&cat)
 	writer.WriteHeader(http.StatusCreated)

@@ -13,23 +13,24 @@ import (
 
 func main() {
 	logger := log.New(os.Stdout, "Product API", log.LstdFlags)
+
 	ph := handlers.NewProducts(logger)
 	ch := handlers.NewCategories(logger)
 
 	sm := mux.NewRouter()
 
 	pr := sm.PathPrefix("/products").Subrouter()
-	pr.HandleFunc("/", ph.GetProducts).Methods(http.MethodGet)
-	pr.HandleFunc("/", ph.AddProduct).Methods(http.MethodPost)
-	pr.HandleFunc("/{id:[0-9]+}", ph.UpdateProduct).Methods(http.MethodPut)
-	pr.HandleFunc("/{id:[0-9]+}", ph.DeleteProduct).Methods(http.MethodDelete)
+	pr.HandleFunc("/", ph.Get).Methods(http.MethodGet)
+	pr.HandleFunc("/", ph.Add).Methods(http.MethodPost)
+	pr.HandleFunc("/{id:[0-9]+}", ph.Update).Methods(http.MethodPut)
+	pr.HandleFunc("/{id:[0-9]+}", ph.Delete).Methods(http.MethodDelete)
 	pr.Use(ph.ProductsMiddleware)
 
 	cr := sm.PathPrefix("/categories").Subrouter()
-	cr.HandleFunc("/", ch.GetCategories).Methods(http.MethodGet)
-	cr.HandleFunc("/", ch.AddCategory).Methods(http.MethodPost)
-	cr.HandleFunc("/{id:[0-9]+}", ch.UpdateCategory).Methods(http.MethodPut)
-	cr.HandleFunc("/{id:[0-9]+}", ch.DeleteCategory).Methods(http.MethodDelete)
+	cr.HandleFunc("/", ch.Get).Methods(http.MethodGet)
+	cr.HandleFunc("/", ch.Add).Methods(http.MethodPost)
+	cr.HandleFunc("/{id:[0-9]+}", ch.Update).Methods(http.MethodPut)
+	cr.HandleFunc("/{id:[0-9]+}", ch.Delete).Methods(http.MethodDelete)
 	cr.Use(ch.CategoriesMiddleware)
 
 	s := &http.Server{
@@ -55,6 +56,9 @@ func main() {
 
 	logger.Println("Server Shutting Down: Signal:", sig)
 
-	tc, _ := context.WithTimeout(context.Background(), 30*time.Second)
-	s.Shutdown(tc)
+	tc, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	err := s.Shutdown(tc)
+	if err != nil {
+		cancel()
+	}
 }

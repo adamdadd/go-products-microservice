@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func (p *Products) UpdateProduct(rw http.ResponseWriter, r *http.Request) {
+func (p *Products) Update(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, cerr := strconv.Atoi(vars["id"])
 	if cerr != nil {
@@ -23,7 +23,7 @@ func (p *Products) UpdateProduct(rw http.ResponseWriter, r *http.Request) {
 	p.logger.Printf("Product updated: ", id)
 }
 
-func (c *Categories) UpdateCategory(rw http.ResponseWriter, r *http.Request) {
+func (c *Categories) Update(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, cerr := strconv.Atoi(vars["id"])
 	if cerr != nil {
