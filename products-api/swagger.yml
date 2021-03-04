@@ -18,7 +18,7 @@ definitions:
         type: string
         x-go-name: Name
     type: object
-    x-go-package: github.com/adamdadd/go-products-microservice/repository
+    x-go-package: go-products-microservice/products-api/repository
   Product:
     properties:
       description:
@@ -42,7 +42,7 @@ definitions:
         type: string
         x-go-name: SKU
     type: object
-    x-go-package: github.com/adamdadd/go-products-microservice/repository
+    x-go-package: go-products-microservice/products-api/repository
 info:
   description: Documentation for Product API.
   title: Products API.
@@ -62,7 +62,7 @@ paths:
       operationId: Category
       responses:
         "201":
-          $ref: '#/responses/201'
+          $ref: '#/responses/noBody'
       tags:
       - categories
   /categories/{id}:
@@ -71,7 +71,7 @@ paths:
       operationId: Category
       responses:
         "200":
-          $ref: '#/responses/200'
+          $ref: '#/responses/noBody'
       tags:
       - categories
     put:
@@ -79,7 +79,7 @@ paths:
       operationId: Category
       responses:
         "201":
-          $ref: '#/responses/201'
+          $ref: '#/responses/noBody'
       tags:
       - categories
   /products/:
@@ -96,7 +96,7 @@ paths:
       operationId: Product
       responses:
         "201":
-          $ref: '#/responses/201'
+          $ref: '#/responses/noBody'
       tags:
       - products
   /products/{id}:
@@ -105,7 +105,7 @@ paths:
       operationId: Product
       responses:
         "200":
-          $ref: '#/responses/200'
+          $ref: '#/responses/noBody'
       tags:
       - products
     put:
@@ -113,7 +113,7 @@ paths:
       operationId: Product
       responses:
         "201":
-          $ref: '#/responses/201'
+          $ref: '#/responses/noBody'
       tags:
       - products
 produces:
@@ -125,6 +125,8 @@ responses:
       items:
         $ref: '#/definitions/Category'
       type: array
+  noBody:
+    description: ""
   productResponse:
     description: ""
     schema:

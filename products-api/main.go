@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/gorilla/mux"
+	"go-products-microservice/products-api/docs"
 	"go-products-microservice/products-api/handlers"
 	"log"
 	"net/http"
@@ -34,12 +35,17 @@ func main() {
 	categoryRouter.HandleFunc("/{id:[0-9]+}", categoryHandler.Delete).Methods(http.MethodDelete)
 	categoryRouter.Use(categoryHandler.CategoriesMiddleware)
 
+	rootRouter := muxRouter.PathPrefix("/").Subrouter()
+	rootRouter.Handle("/docs", docs.DocsMiddleware())
+	rootRouter.Handle("/swagger.yml", http.FileServer(http.Dir("./")))
+
+
 	server := &http.Server{
 		Addr:         ":8080",
 		Handler:      muxRouter,
 		IdleTimeout:  120*time.Second,
-		ReadTimeout:  2*time.Second,
-		WriteTimeout: 2*time.Second,
+		ReadTimeout:  5*time.Second,
+		WriteTimeout: 10*time.Second,
 	}
 
 	go func() {

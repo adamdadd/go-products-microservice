@@ -16,7 +16,9 @@
 package docs
 
 import (
-	"github.com/adamdadd/go-products-microservice/repository"
+	"github.com/go-openapi/runtime/middleware"
+	"go-products-microservice/products-api/repository"
+	"net/http"
 )
 
 // swagger:route GET /products/ products listProducts
@@ -27,17 +29,17 @@ import (
 // swagger:route POST /products/ products Product
 // Adds a new product
 // Responses:
-//	201: 201
+//	201: noBody
 
 // swagger:route PUT /products/{id} products Product
 // Updates an existing product
 // Responses:
-//	201: 201
+//	201: noBody
 
 // swagger:route DELETE /products/{id} products Product
 // Deletes a product
 // Responses:
-//	200: 200
+//	200: noBody
 
 // swagger:response productResponse
 type productResponse struct {
@@ -53,17 +55,17 @@ type productResponse struct {
 // swagger:route POST /categories/ categories Category
 // Adds a new product
 // Responses:
-//	201: 201
+//	201: noBody
 
 // swagger:route PUT /categories/{id} categories Category
 // Updates an existing product
 // Responses:
-//	201: 201
+//	201: noBody
 
 // swagger:route DELETE /categories/{id} categories Category
 // Deletes a product
 // Responses:
-//	200: 200
+//	200: noBody
 
 // swagger:response categoryResponse
 type categoryResponse struct {
@@ -71,3 +73,13 @@ type categoryResponse struct {
 	Body []repository.Category
 }
 
+// swagger:response noBody
+type noBody struct {
+
+}
+
+func DocsMiddleware() http.Handler {
+	opts := middleware.RedocOpts{SpecURL: "/swagger.yml"}
+	sh := middleware.Redoc(opts, nil)
+	return sh
+}
