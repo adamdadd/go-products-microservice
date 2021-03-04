@@ -41,7 +41,16 @@ func TestProductRepo_DeleteProduct(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			"Successfully Delete Product",
+			args{1 },
+			false,
+		},
+		{
+			"Failed Delete Product",
+			args{-1},
+			true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -58,7 +67,10 @@ func TestProductRepo_GetProducts(t *testing.T) {
 		name string
 		want Products
 	}{
-		// TODO: Add test cases.
+		{
+			"Successfully retrieve list of products",
+			productList,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -80,7 +92,16 @@ func TestProductRepo_UpdateProduct(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			"Successfully update product",
+			args{1, &models.Product{1, "update", "update product 1", 2, "LD70", "levee.com"}},
+			false,
+		},
+		{
+			"Successfully update product",
+			args{10, &models.Product{1, "update", "update product 1", 2, "LD70", "levee.com"}},
+			true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
