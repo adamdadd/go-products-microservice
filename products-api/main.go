@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"go-products-microservice/products-api/docs"
 	"go-products-microservice/products-api/handlers"
+	"go-products-microservice/products-api/repository"
 	"log"
 	"net/http"
 	"os"
@@ -15,30 +16,31 @@ import (
 func main() {
 	logger := log.New(os.Stdout, "Product API", log.LstdFlags)
 
-	productHandler := handlers.NewProducts(logger)
-	categoryHandler := handlers.NewCategories(logger)
+	productRepo := repository.NewProductRepo()
+	categoryRepo := repository.NewCategoryRepo()
+
+	productHandler := handlers.NewProducts(logger, productRepo)
+	categoryHandler := handlers.NewCategories(logger, categoryRepo)
 
 	muxRouter := mux.NewRouter()
-
-	productRouter := muxRouter.PathPrefix("/products").Subrouter()
-	productRouter.HandleFunc("/", productHandler.Get).Methods(http.MethodGet)
-	productRouter.HandleFunc("/", productHandler.Add).Methods(http.MethodPost)
-	productRouter.HandleFunc("/{id:[0-9]+}", productHandler.Update).Methods(http.MethodPut)
-	productRouter.HandleFunc("/{id:[0-9]+}", productHandler.Delete).Methods(http.MethodDelete)
-	productRouter.Use(productHandler.ProductsMiddleware)
-	productRouter.UseEncodedPath()
-
-	categoryRouter := muxRouter.PathPrefix("/categories").Subrouter()
-	categoryRouter.HandleFunc("/", categoryHandler.Get).Methods(http.MethodGet)
-	categoryRouter.HandleFunc("/", categoryHandler.Add).Methods(http.MethodPost)
-	categoryRouter.HandleFunc("/{id:[0-9]+}", categoryHandler.Update).Methods(http.MethodPut)
-	categoryRouter.HandleFunc("/{id:[0-9]+}", categoryHandler.Delete).Methods(http.MethodDelete)
-	categoryRouter.Use(categoryHandler.CategoriesMiddleware)
 
 	rootRouter := muxRouter.PathPrefix("/").Subrouter()
 	rootRouter.Handle("/docs", docs.DocsMiddleware())
 	rootRouter.Handle("/swagger.yml", http.FileServer(http.Dir("./")))
 
+	productRouter := muxRouter.PathPrefix("/products").Subrouter()
+	productRouter.HandleFunc("", productHandler.GetAll).Methods(http.MethodGet)
+	productRouter.HandleFunc("", productHandler.Add).Methods(http.MethodPost)
+	productRouter.HandleFunc("/{id:[0-9]+}", productHandler.Update).Methods(http.MethodPut)
+	productRouter.HandleFunc("/{id:[0-9]+}", productHandler.Delete).Methods(http.MethodDelete)
+	productRouter.Use(productHandler.ProductsMiddleware)
+
+	categoryRouter := muxRouter.PathPrefix("/categories").Subrouter()
+	categoryRouter.HandleFunc("", categoryHandler.GetAll).Methods(http.MethodGet)
+	categoryRouter.HandleFunc("", categoryHandler.Add).Methods(http.MethodPost)
+	categoryRouter.HandleFunc("/{id:[0-9]+}", categoryHandler.Update).Methods(http.MethodPut)
+	categoryRouter.HandleFunc("/{id:[0-9]+}", categoryHandler.Delete).Methods(http.MethodDelete)
+	categoryRouter.Use(categoryHandler.CategoriesMiddleware)
 
 	server := &http.Server{
 		Addr:         ":8080",

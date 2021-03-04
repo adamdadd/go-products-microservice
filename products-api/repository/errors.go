@@ -1,29 +1,28 @@
 package repository
 
-import "fmt"
-
-type RepoError interface {
-	Error() string
-}
-
-
 type ProductNotFoundError struct {
 	msg string
 }
 
-func (p ProductNotFoundError) Error() string {
+func (p *ProductNotFoundError) Error() string {
 	return p.msg
+}
+
+func NewProductNotFoundError(msg string) error {
+	return &ProductNotFoundError{msg}
 }
 
 
 type CategoryNotFoundError struct {
 	msg string
 }
-func (c CategoryNotFoundError) Error() string {
+
+func (c *CategoryNotFoundError) Error() string {
 	return c.msg
 }
 
-var (
-	ErrorCategoryNotFound = fmt.Errorf("Category Not Found")
-	ErrorProductNotFound = fmt.Errorf("Product Not Found")
-)
+func NewCategoryNotFoundError(msg string) error {
+	return &CategoryNotFoundError{msg}
+}
+
+

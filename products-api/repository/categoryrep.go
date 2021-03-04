@@ -2,34 +2,23 @@ package repository
 
 import (
 	"encoding/json"
+	"go-products-microservice/products-api/models"
 	"io"
 )
 
-// swagger:model Category
-type Category struct {
-	ID int `json:"id"`
-	Name string `json:"name"`
-	Description string `json:"description"`
-	ImageURL string `json:"image_url"`
+type CategoryRepo struct {}
+
+func NewCategoryRepo() *CategoryRepo {
+	return &CategoryRepo{}
 }
 
-
-func (c *Category) FromJSON(r io.Reader) error {
-	decoder := json.NewDecoder(r)
-	return decoder.Decode(c)
-}
-
-func (c *Category) ToJSON(w io.Writer) error {
-	encoder := json.NewEncoder(w)
-	return encoder.Encode(c)
-}
-
-func AddCategory(c *Category) {
+func (cr *CategoryRepo) AddCategory(c *models.Category) error {
 	c.ID = nextCategoryID()
 	categoryList = append(categoryList, c)
+	return nil
 }
 
-func UpdateCategory(id int, c *Category) error {
+func (cr *CategoryRepo) UpdateCategory(id int, c *models.Category) error {
 	_, i, err := findCategory(id)
 	if err != nil {
 		return err
@@ -38,7 +27,7 @@ func UpdateCategory(id int, c *Category) error {
 	return nil
 }
 
-func DeleteCategory(id int) error {
+func (cr *CategoryRepo) DeleteCategory(id int) error {
 	_, i, err := findCategory(id)
 	if err != nil {
 		return err
@@ -47,18 +36,18 @@ func DeleteCategory(id int) error {
 	return nil
 }
 
-type Categories []*Category
+func (cr *CategoryRepo) GetCategories() Categories {
+	return categoryList
+}
+
+type Categories []*models.Category
 
 func (c *Categories) ToJSON(w io.Writer) error {
 	encoder := json.NewEncoder(w)
 	return encoder.Encode(c)
 }
 
-func GetCategories() Categories {
-	return categoryList
-}
-
-var categoryList = []*Category{
+var categoryList = Categories {
 	{
 		ID: 			1,
 		Name: 			"Tall Coffee",

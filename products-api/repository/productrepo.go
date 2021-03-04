@@ -2,35 +2,23 @@ package repository
 
 import (
 	"encoding/json"
+	"go-products-microservice/products-api/models"
 	"io"
 )
 
-// swagger:model Product
-type Product struct {
-	ID int `json:"id"`
-	Name string `json:"name"`
-	Description string `json:"description"`
-	PriceGBP float32 `json:"price"`
-	SKU string `json:"sku"`
-	ImageURL string `json:"image_url"`
+type ProductRepo struct {}
+
+func NewProductRepo() *ProductRepo {
+	return &ProductRepo{}
 }
 
-func (p *Product) FromJSON(r io.Reader) error {
-	decoder := json.NewDecoder(r)
-	return decoder.Decode(p)
-}
-
-func (p *Product) ToJSON(w io.Writer) error {
-	encoder := json.NewEncoder(w)
-	return encoder.Encode(p)
-}
-
-func AddProduct(p *Product) {
+func (pr *ProductRepo) AddProduct(p *models.Product) error {
 	p.ID = nextProductID()
 	productList = append(productList, p)
+	return nil
 }
 
-func UpdateProduct(id int, p *Product) error {
+func (pr *ProductRepo) UpdateProduct(id int, p *models.Product) error {
 	_, i, err := findProduct(id)
 	if err != nil {
 		return err
@@ -39,7 +27,7 @@ func UpdateProduct(id int, p *Product) error {
 	return nil
 }
 
-func DeleteProduct(id int) RepoError {
+func (pr *ProductRepo) DeleteProduct(id int) error {
 	_, i, err := findProduct(id)
 	if err != nil {
 		return err
@@ -48,7 +36,7 @@ func DeleteProduct(id int) RepoError {
 	return nil
 }
 
-type Products []*Product
+type Products []*models.Product
 
 
 func (p *Products) ToJSON(w io.Writer) error {
@@ -56,7 +44,7 @@ func (p *Products) ToJSON(w io.Writer) error {
 	return encoder.Encode(p)
 }
 
-func GetProducts() Products {
+func (pr *ProductRepo) GetProducts() Products {
 	return productList
 }
 

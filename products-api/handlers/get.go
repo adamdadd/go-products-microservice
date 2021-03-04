@@ -1,24 +1,23 @@
 package handlers
 
 import (
-	"go-products-microservice/products-api/repository"
 	"net/http"
 )
 
 
-func (p *Products) Get(rw http.ResponseWriter, r *http.Request) {
-	lp := repository.GetProducts()
-	err := lp.ToJSON(rw)
+func (p *Products) GetAll(rw http.ResponseWriter, r *http.Request) {
+	listProd := p.prodRepo.GetProducts()
+	err := listProd.ToJSON(rw)
 	if err != nil {
 		http.Error(rw, "failed to process data", http.StatusInternalServerError)
 	}
 }
 
-func (c *Categories) Get(writer http.ResponseWriter, request *http.Request) {
-	lc := repository.GetCategories()
-	err := lc.ToJSON(writer)
+func (c *Categories) GetAll(rw http.ResponseWriter, r *http.Request) {
+	listCat := c.catRepo.GetCategories()
+	err := listCat.ToJSON(rw)
 	if err != nil {
-		http.Error(writer, "Failed to get categories", http.StatusInternalServerError)
+		http.Error(rw, "Failed to get categories", http.StatusInternalServerError)
 	}
 }
 

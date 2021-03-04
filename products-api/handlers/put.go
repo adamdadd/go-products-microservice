@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/gorilla/mux"
-	"go-products-microservice/products-api/repository"
+	"go-products-microservice/products-api/models"
 	"net/http"
 	"strconv"
 )
@@ -15,9 +15,9 @@ func (p *Products) Update(rw http.ResponseWriter, r *http.Request) {
 		http.Error(rw, "Invalid URI", http.StatusBadRequest)
 	}
 
-	product := r.Context().Value(KeyProduct{}).(repository.Product)
+	product := r.Context().Value(KeyProduct{}).(models.Product)
 
-	err := repository.UpdateProduct(id, &product)
+	err := p.prodRepo.UpdateProduct(id, &product)
 	if err != nil {
 		http.Error(rw, "Product not found", http.StatusNotFound)
 		return
@@ -25,6 +25,11 @@ func (p *Products) Update(rw http.ResponseWriter, r *http.Request) {
 
 	p.logger.Printf("Product updated: ", id)
 	rw.WriteHeader(http.StatusCreated)
+	responseError := product.ToJSON(rw)
+	if responseError != nil {
+		http.Error(rw, "Failed to response with updated product", http.StatusInternalServerError)
+		return
+	}
 }
 
 
@@ -36,14 +41,20 @@ func (c *Categories) Update(rw http.ResponseWriter, r *http.Request) {
 		http.Error(rw, "Invalid URI", http.StatusBadRequest)
 	}
 
-	cat := r.Context().Value(KeyCategories{}).(repository.Category)
+	cat := r.Context().Value(KeyCategories{}).(models.Category)
 
-	err := repository.UpdateCategory(id, &cat)
+	err := c.catRepo.UpdateCategory(id, &cat)
 	if err != nil {
-		http.Error(rw, "Product not found", http.StatusNotFound)
+		http.Error(rw, "Category not found", http.StatusNotFound)
 		return
 	}
 
-	c.logger.Printf("Product updated: ", id)
+	c.logger.Printf("Category updated: ", id)
+
 	rw.WriteHeader(http.StatusCreated)
+	responseError := cat.ToJSON(rw)
+	if responseError != nil {
+		http.Error(rw, "Failed to response with updated category", http.StatusInternalServerError)
+		return
+	}
 }

@@ -18,7 +18,7 @@ definitions:
         type: string
         x-go-name: Name
     type: object
-    x-go-package: go-products-microservice/products-api/repository
+    x-go-package: go-products-microservice/products-api/models
   Product:
     properties:
       description:
@@ -42,7 +42,7 @@ definitions:
         type: string
         x-go-name: SKU
     type: object
-    x-go-package: go-products-microservice/products-api/repository
+    x-go-package: go-products-microservice/products-api/models
 info:
   description: Documentation for Product API.
   title: Products API.
@@ -54,7 +54,7 @@ paths:
       operationId: listCategories
       responses:
         "200":
-          $ref: '#/responses/categoryResponse'
+          $ref: '#/responses/categoriesResponse'
       tags:
       - categories
     post:
@@ -62,7 +62,7 @@ paths:
       operationId: Category
       responses:
         "201":
-          $ref: '#/responses/noBody'
+          $ref: '#/responses/categoryResponse'
       tags:
       - categories
   /categories/{id}:
@@ -70,7 +70,7 @@ paths:
       description: Deletes a product
       operationId: Category
       responses:
-        "200":
+        "204":
           $ref: '#/responses/noBody'
       tags:
       - categories
@@ -79,7 +79,7 @@ paths:
       operationId: Category
       responses:
         "201":
-          $ref: '#/responses/noBody'
+          $ref: '#/responses/categoryResponse'
       tags:
       - categories
   /products/:
@@ -88,7 +88,7 @@ paths:
       operationId: listProducts
       responses:
         "200":
-          $ref: '#/responses/productResponse'
+          $ref: '#/responses/productsResponse'
       tags:
       - products
     post:
@@ -96,7 +96,7 @@ paths:
       operationId: Product
       responses:
         "201":
-          $ref: '#/responses/noBody'
+          $ref: '#/responses/productResponse'
       tags:
       - products
   /products/{id}:
@@ -104,7 +104,7 @@ paths:
       description: Deletes a product
       operationId: Product
       responses:
-        "200":
+        "204":
           $ref: '#/responses/noBody'
       tags:
       - products
@@ -113,21 +113,29 @@ paths:
       operationId: Product
       responses:
         "201":
-          $ref: '#/responses/noBody'
+          $ref: '#/responses/productResponse'
       tags:
       - products
 produces:
 - application/json
 responses:
-  categoryResponse:
+  categoriesResponse:
     description: ""
     schema:
       items:
         $ref: '#/definitions/Category'
       type: array
+  categoryResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/Category'
   noBody:
     description: ""
   productResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/Product'
+  productsResponse:
     description: ""
     schema:
       items:
